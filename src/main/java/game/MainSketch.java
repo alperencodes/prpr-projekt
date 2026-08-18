@@ -1,9 +1,11 @@
+package game;
+
 import processing.core.PApplet;
 
-public class Game extends PApplet {
+public class MainSketch extends PApplet {
     @Override
     public void settings() {
-        size(640, 360);
+        fullScreen();
     }
 
     @Override
@@ -12,10 +14,9 @@ public class Game extends PApplet {
 
     @Override
     public void draw() {
-        background(67);
     }
 
     public static void main(String[] args) {
-        PApplet.main(Game.class, args);
+        PApplet.main(MainSketch.class, args);
     }
 }
