@@ -1,4 +1,4 @@
-package game.gameplay;
+package game;
 
 public class Beatmap {
 }

@@ -1,4 +1,4 @@
-package game.settings;
+package app.settings;
 
 public class GameSettingsTest {
 }

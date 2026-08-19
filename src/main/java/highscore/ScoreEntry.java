@@ -1,4 +1,4 @@
-package game.highscore;
+package highscore;
 
 public class ScoreEntry {
 }

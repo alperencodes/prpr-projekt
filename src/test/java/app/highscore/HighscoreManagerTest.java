@@ -1,4 +1,4 @@
-package game.highscore;
+package app.highscore;
 
 public class HighscoreManagerTest {
 }
