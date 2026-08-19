@@ -6,6 +6,7 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.sound.SoundFile;
 import settings.GameSettings;
+import ui.Button;
 
 public class MainSketch extends PApplet {
     private GameState state;
@@ -20,6 +21,12 @@ public class MainSketch extends PApplet {
 
     private final int WIDTH = 1280;
     private final int HEIGHT = 720;
+
+    private Button playButton = new Button("Play", WIDTH / 2f - 50, 200, 100, 50);
+    private Button highscoresButton = new Button("Highscores", WIDTH / 2f - 75, 275, 150, 50);
+    private Button tutorialButton = new Button("Tutorial", WIDTH / 2f - 75, 350, 150, 50);
+    private Button settingsButton = new Button("Settings", WIDTH / 2f - 75, 425, 150, 50);
+    private Button exitButton = new Button("Exit", WIDTH / 2f - 50, 500, 100, 50);
 
     @Override
     public void settings() {
@@ -38,10 +45,26 @@ public class MainSketch extends PApplet {
 
         // drawLanes();
         // drawNotes();
+        drawButtons();
 
         fill(255);
         text("改善\nwelcome to kaizen!", (float) WIDTH / 2, 120);
         textAlign(CENTER);
+    }
+
+    public void drawButtons() {
+        playButton.draw(this);
+        highscoresButton.draw(this);
+        tutorialButton.draw(this);
+        settingsButton.draw(this);
+        exitButton.draw(this);
+    }
+
+    @Override
+    public void mousePressed() {
+        if (exitButton.contains(mouseX, mouseY)) {
+            exit();
+        }
     }
 
     public static void main(String[] args) {
