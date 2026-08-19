@@ -1,4 +1,4 @@
-package app.gameplay;
+package app.game;
 
 public class GameManagerTest {
 }
