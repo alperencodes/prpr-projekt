@@ -8,6 +8,7 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
 import processing.sound.SoundFile;
+import settings.DisplayManager;
 import settings.GameSettings;
 
 public class MainSketch extends PApplet {
@@ -22,6 +23,7 @@ public class MainSketch extends PApplet {
     private PFont font;
     private PImage cursorImg;
     private Textarea title;
+    private DisplayManager displayManager;
 
     // controlp5 instanze
     private ControlP5 cp5;
@@ -36,6 +38,10 @@ public class MainSketch extends PApplet {
 
     @Override
     public void setup() {
+        this.displayManager = new DisplayManager();
+        final int frameRate = displayManager.isRateKnown() ? displayManager.getRefreshRate() : 60;
+        frameRate(frameRate);
+
         noCursor();
         font = createFont("fonts/Torus.otf", 32);
         textFont(font);
