@@ -1,12 +1,14 @@
 package app;
 
+import controlP5.ControlP5;
+import controlP5.Textarea;
 import game.Difficulty;
 import game.GameManager;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PImage;
 import processing.sound.SoundFile;
 import settings.GameSettings;
-import ui.Button;
 
 public class MainSketch extends PApplet {
     private GameState state;
@@ -18,15 +20,14 @@ public class MainSketch extends PApplet {
     private long countdownStartMs;
     private int tutorialPage;
     private PFont font;
+    private PImage cursorImg;
+    private Textarea title;
+
+    // controlp5 instanze
+    private ControlP5 cp5;
 
     private final int WIDTH = 1280;
     private final int HEIGHT = 720;
-
-    private Button playButton = new Button("Play", WIDTH / 2f - 50, 200, 100, 50);
-    private Button highscoresButton = new Button("Highscores", WIDTH / 2f - 75, 275, 150, 50);
-    private Button tutorialButton = new Button("Tutorial", WIDTH / 2f - 75, 350, 150, 50);
-    private Button settingsButton = new Button("Settings", WIDTH / 2f - 75, 425, 150, 50);
-    private Button exitButton = new Button("Exit", WIDTH / 2f - 50, 500, 100, 50);
 
     @Override
     public void settings() {
@@ -35,8 +36,46 @@ public class MainSketch extends PApplet {
 
     @Override
     public void setup() {
-        font = createFont("Torus", 32);
+        noCursor();
+        font = createFont("fonts/Torus.otf", 32);
         textFont(font);
+        cursorImg = loadImage("images/cursor.png");
+        imageMode(CENTER);
+
+        // initialisier cp5
+        cp5 = new ControlP5(this);
+        cp5.setFont(font);
+        cp5.setAutoDraw(false);
+
+        cp5.addTextarea("welcome to kaizen!")
+                .setPosition(WIDTH / 2f - 150, 120) // Textareas align from top-left, adjust X accordingly
+                .setSize(300, 50)
+                .setText("welcome to kaizen!")
+                .hideScrollbar();
+
+        float btnX = WIDTH / 2f - 100; // Shifted left slightly to center a 200px wide button
+        int btnWidth = 200;
+        int btnHeight = 50;
+
+        cp5.addButton("Play")
+                .setPosition(btnX, 200)
+                .setSize(btnWidth, btnHeight);
+
+        cp5.addButton("Highscores")
+                .setPosition(btnX, 275)
+                .setSize(btnWidth, btnHeight);
+
+        cp5.addButton("Tutorial")
+                .setPosition(btnX, 350)
+                .setSize(btnWidth, btnHeight);
+
+        cp5.addButton("Settings")
+                .setPosition(btnX, 425)
+                .setSize(btnWidth, btnHeight);
+
+        cp5.addButton("Exit")
+                .setPosition(btnX, 500)
+                .setSize(btnWidth, btnHeight);
     }
 
     @Override
@@ -45,26 +84,41 @@ public class MainSketch extends PApplet {
 
         // drawLanes();
         // drawNotes();
-        drawButtons();
 
         fill(255);
-        text("改善\nwelcome to kaizen!", (float) WIDTH / 2, 120);
-        textAlign(CENTER);
+
+        // manually drawing buttons first so that mouse cursor is on the top layer
+        cp5.draw();
+
+        imageMode(CENTER);
+        image(cursorImg, mouseX, mouseY, 100, 100);
     }
 
-    public void drawButtons() {
-        playButton.draw(this);
-        highscoresButton.draw(this);
-        tutorialButton.draw(this);
-        settingsButton.draw(this);
-        exitButton.draw(this);
+    // ==========================================
+    // CONTROLP5 AUTOMATIC EVENT METHODS
+    // These fire automatically based on button names
+    // ==========================================
+
+    public void Play() {
+        println("Play button clicked!");
+        // Switch state to gameplay, hide menu UI: cp5.hide();
     }
 
-    @Override
-    public void mousePressed() {
-        if (exitButton.contains(mouseX, mouseY)) {
-            exit();
-        }
+    public void Highscores() {
+        println("Highscores button clicked!");
+    }
+
+    public void Tutorial() {
+        println("Tutorial button clicked!");
+    }
+
+    public void Settings() {
+        println("Settings button clicked!");
+    }
+
+    public void Exit() {
+        println("Exiting game...");
+        exit();
     }
 
     public static void main(String[] args) {
