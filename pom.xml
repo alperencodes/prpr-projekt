@@ -52,6 +52,12 @@
             <id>jogl</id>
             <url>https://jogamp.org/deployment/maven/</url>
         </repository>
+
+        <!-- Add the JitPack repository so Maven can pull libraries directly from GitHub -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -62,6 +68,20 @@
             <version>4.5.2</version>
             <scope>system</scope>
             <systemPath>${pom.basedir}/src/main/resources/libraries/core/core.jar</systemPath>
+        </dependency>
+
+        <!-- ControlP5 UI library via JitPack -->
+        <!-- Exclude transitive processing core dependencies so it relies on your local core.jar -->
+        <dependency>
+            <groupId>com.github.micycle1</groupId>
+            <artifactId>controlp5</artifactId>
+            <version>main-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.processing</groupId>
+                    <artifactId>core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Processing Sound -->
@@ -417,5 +437,3 @@
     </profiles>
 
 </project>
-
-
