@@ -1,7 +1,6 @@
 package app;
 
-import controlP5.ControlP5;
-import controlP5.Textarea;
+import controlP5.*;
 import game.Difficulty;
 import game.GameManager;
 import processing.core.PApplet;
@@ -12,7 +11,7 @@ import settings.DisplayManager;
 import settings.GameSettings;
 
 public class MainSketch extends PApplet {
-    private GameState state;
+    private GameState state = GameState.MENU;
     private GameManager currentGame;
     private GameSettings gameSettings;
     private SoundFile currentSong;
@@ -28,8 +27,18 @@ public class MainSketch extends PApplet {
     // controlp5 instanze
     private ControlP5 cp5;
 
+    private Group menuGroup;
+    private Group gameConfigGroup;
+    private Group playingGroup;
+    private Group settingsGroup;
+    private Group tutorialGroup;
+    private Group highscoresGroup;
+
     private final int WIDTH = 1280;
     private final int HEIGHT = 720;
+
+    private final int PINK_BASE = 0xFFFF69B4;  // Hot Pink
+    private final int PINK_ACCENT = 0xFFFF1493; // Deep Pink
 
     @Override
     public void settings() {
@@ -53,51 +62,125 @@ public class MainSketch extends PApplet {
         cp5.setFont(font);
         cp5.setAutoDraw(false);
 
-        cp5.addTextarea("welcome to kaizen!")
-                .setPosition(WIDTH / 2f - 150, 120) // Textareas align from top-left, adjust X accordingly
-                .setSize(300, 50)
-                .setText("welcome to kaizen!")
-                .hideScrollbar();
+        menuGroup = cp5.addGroup("menuGroup").setLabel("");;
+        gameConfigGroup = cp5.addGroup("gameConfigGroup").setLabel("");
+        playingGroup = cp5.addGroup("playingGroup").setLabel("");
+        settingsGroup = cp5.addGroup("settingsGroup").setLabel("");
+        tutorialGroup = cp5.addGroup("tutorialGroup").setLabel("");
+        highscoresGroup = cp5.addGroup("highscoresGroup").setLabel("");
 
-        float btnX = WIDTH / 2f - 100; // Shifted left slightly to center a 200px wide button
-        int btnWidth = 200;
-        int btnHeight = 50;
+        cp5.addTextarea("welcomeMessage")
+                .setPosition(WIDTH / 2f - 100, 120) // Textareas align from top-left, adjust X accordingly
+                .setSize(300, 40)
+                .setText("welcome to...")
+                .hideScrollbar()
+                .moveTo(menuGroup);
 
-        cp5.addButton("Play")
-                .setPosition(btnX, 200)
-                .setSize(btnWidth, btnHeight);
+        int btnWidth = 175;
+        int btnHeight = 40;
+        float btnX = WIDTH / 2f - (btnWidth / 2f); // Shifted left slightly to center a 200px wide button
+
+        int titleBtnWidth = 210;
+        int titleBtnHeight = 60;
+        float titleBtnX = WIDTH / 2f - (titleBtnWidth / 2f);
+
+        cp5.addButton("gameConfig")
+                .setLabel("KAIZEN!")
+                .setPosition(titleBtnX, 175)
+                .setSize(titleBtnWidth, titleBtnHeight)
+                .setColorBackground(PINK_BASE)
+                .moveTo(menuGroup)
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setSize(40)
+                .align(ControlP5.CENTER, ControlP5.CENTER);
 
         cp5.addButton("Highscores")
-                .setPosition(btnX, 275)
-                .setSize(btnWidth, btnHeight);
+                .setPosition(btnX, 300)
+                .setSize(btnWidth, btnHeight)
+                .setColorBackground(0xFFFF69B4)
+                .moveTo(menuGroup)
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setSize(24)
+                .align(ControlP5.CENTER, ControlP5.CENTER);
 
         cp5.addButton("Tutorial")
-                .setPosition(btnX, 350)
-                .setSize(btnWidth, btnHeight);
+                .setPosition(btnX, 375)
+                .setSize(btnWidth, btnHeight)
+                .setColorBackground(0xFFFF69B4)
+                .moveTo(menuGroup)
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setSize(24)
+                .align(ControlP5.CENTER, ControlP5.CENTER);
 
         cp5.addButton("Settings")
-                .setPosition(btnX, 425)
-                .setSize(btnWidth, btnHeight);
+                .setPosition(btnX, 450)
+                .setSize(btnWidth, btnHeight)
+                .setColorBackground(0xFFFF69B4)
+                .moveTo(menuGroup)
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setSize(24)
+                .align(ControlP5.CENTER, ControlP5.CENTER);
 
         cp5.addButton("Exit")
-                .setPosition(btnX, 500)
-                .setSize(btnWidth, btnHeight);
+                .setPosition(btnX, 525)
+                .setSize(btnWidth, btnHeight)
+                .setColorBackground(0xFFFF69B4)
+                .moveTo(menuGroup)
+                .getCaptionLabel()
+                .toUpperCase(false)
+                .setSize(24)
+                .align(ControlP5.CENTER, ControlP5.CENTER);
     }
 
     @Override
     public void draw() {
         background(0);
 
-        // drawLanes();
-        // drawNotes();
+        animateUI();
 
         fill(255);
 
-        // manually drawing buttons first so that mouse cursor is on the top layer
         cp5.draw();
 
         imageMode(CENTER);
         image(cursorImg, mouseX, mouseY, 100, 100);
+    }
+
+    private void animateUI() {
+        if (state == GameState.MENU) {
+            Button titleBtn = (Button) menuGroup.getController("gameConfig");
+            if (titleBtn != null) {
+                float wave = sin(millis() * 0.003f);
+                float interpolationFactor = map(wave, -1f, 1f, 0f, 1f);
+                int dynamicPinkValue = lerpColor(PINK_BASE, PINK_ACCENT, interpolationFactor);
+
+                titleBtn.setColorBackground(dynamicPinkValue);
+            }
+        }
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
+
+        menuGroup.hide();
+        gameConfigGroup.hide();
+        highscoresGroup.hide();
+        playingGroup.hide();
+        settingsGroup.hide();
+        tutorialGroup.hide();
+
+        switch(state) {
+            case MENU -> menuGroup.show();
+            case GAME_CONFIG -> gameConfigGroup.show();
+            case HIGHSCORES -> highscoresGroup.show();
+            case PLAYING -> playingGroup.show();
+            case SETTINGS -> settingsGroup.show();
+            case TUTORIAL -> tutorialGroup.show();
+        }
     }
 
     // ==========================================
@@ -105,21 +188,29 @@ public class MainSketch extends PApplet {
     // These fire automatically based on button names
     // ==========================================
 
-    public void Play() {
+    public void gameConfig() {
         println("Play button clicked!");
-        // Switch state to gameplay, hide menu UI: cp5.hide();
+        setState(GameState.GAME_CONFIG);
+    }
+
+    public void Play() {
+        println("STARTING GAME...");
+        setState(GameState.PLAYING);
     }
 
     public void Highscores() {
         println("Highscores button clicked!");
+        setState(GameState.HIGHSCORES);
     }
 
     public void Tutorial() {
         println("Tutorial button clicked!");
+        setState(GameState.TUTORIAL);
     }
 
     public void Settings() {
         println("Settings button clicked!");
+        setState(GameState.SETTINGS);
     }
 
     public void Exit() {
