@@ -2,7 +2,7 @@ package app;
 
 public enum GameState {
     MENU,
-    PLAY_SETUP,
+    GAME_CONFIG,
     COUNTDOWN,
     PLAYING,
     RESULTS,
