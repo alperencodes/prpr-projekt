@@ -1,17 +1,17 @@
 package app.screen;
 
-import app.MainSketch;
 import controlP5.Button;
 import controlP5.ControlP5;
+import processing.core.PApplet;
 
 public class MenuScreen extends AbstractScreen {
     private static final int PINK_BASE = 0xFFFF69B4;
     private static final int PINK_ACCENT = 0xFFFF1493;
 
-    private final MainSketch sketch;
+    private final PApplet sketch;
     private final Button titleButton;
 
-    public MenuScreen(MainSketch sketch, ControlP5 cp5) {
+    public MenuScreen(PApplet sketch, ControlP5 cp5) {
         super(cp5, "menuGroup");
         this.sketch = sketch;
 
