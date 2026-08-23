@@ -24,7 +24,6 @@ public class MainSketch extends PApplet {
     private Textarea title;
     private DisplayManager displayManager;
 
-    // controlp5 instanze
     private ControlP5 cp5;
 
     private Group menuGroup;
@@ -57,7 +56,6 @@ public class MainSketch extends PApplet {
         cursorImg = loadImage("images/cursor.png");
         imageMode(CENTER);
 
-        // initialisier cp5
         cp5 = new ControlP5(this);
         cp5.setFont(font);
         cp5.setAutoDraw(false);
@@ -70,7 +68,7 @@ public class MainSketch extends PApplet {
         highscoresGroup = cp5.addGroup("highscoresGroup").setLabel("");
 
         cp5.addTextarea("welcomeMessage")
-                .setPosition(WIDTH / 2f - 100, 120) // Textareas align from top-left, adjust X accordingly
+                .setPosition(WIDTH / 2f - 100, 120)
                 .setSize(300, 40)
                 .setText("welcome to...")
                 .hideScrollbar()
@@ -78,7 +76,7 @@ public class MainSketch extends PApplet {
 
         int btnWidth = 175;
         int btnHeight = 40;
-        float btnX = WIDTH / 2f - (btnWidth / 2f); // Shifted left slightly to center a 200px wide button
+        float btnX = WIDTH / 2f - (btnWidth / 2f);
 
         int titleBtnWidth = 210;
         int titleBtnHeight = 60;
