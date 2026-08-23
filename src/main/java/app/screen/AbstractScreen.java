@@ -23,5 +23,5 @@ public abstract class AbstractScreen implements Screen {
     @Override
     public void draw() {
         // Most screens currently only contain ControlP5 components.
-    }
+     }
 }
