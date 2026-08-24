@@ -61,8 +61,8 @@ public class MainSketch extends PApplet {
         cp5.setAutoDraw(false);
 
         screens.put(GameState.MENU, new MenuScreen(this, cp5));
-        screens.put(GameState.GAME_CONFIG, new GameConfigScreen(cp5));
-        screens.put(GameState.PLAYING, new PlayingScreen(cp5));
+        screens.put(GameState.GAME_CONFIG, new GameConfigScreen(this, cp5));
+        screens.put(GameState.PLAYING, new PlayingScreen(this, cp5));
         screens.put(GameState.SETTINGS, new SettingsScreen(cp5));
         screens.put(GameState.TUTORIAL, new TutorialScreen(cp5));
         screens.put(GameState.HIGHSCORES, new HighscoresScreen(cp5));
@@ -110,7 +110,33 @@ public class MainSketch extends PApplet {
         setState(GameState.GAME_CONFIG);
     }
 
-    public void Play() {
+    public void selectEasy() {
+        selectDifficulty(Difficulty.EASY);
+    }
+
+    public void selectMedium() {
+        selectDifficulty(Difficulty.MEDIUM);
+    }
+
+    public void selectHard() {
+        selectDifficulty(Difficulty.HARD);
+    }
+
+    private void selectDifficulty(Difficulty difficulty) {
+        GameConfigScreen configScreen = (GameConfigScreen) screens.get(GameState.GAME_CONFIG);
+        configScreen.selectDifficulty(difficulty);
+    }
+
+    public void startGame() {
+        GameConfigScreen configScreen = (GameConfigScreen) screens.get(GameState.GAME_CONFIG);
+        Difficulty difficulty = configScreen.getSelectedDifficulty();
+        if (difficulty == null) {
+            return;
+        }
+
+        selectedDifficulty = difficulty;
+        currentGame = new GameManager();
+        ((PlayingScreen) screens.get(GameState.PLAYING)).setDifficulty(selectedDifficulty);
         println("STARTING GAME...");
         setState(GameState.PLAYING);
     }
