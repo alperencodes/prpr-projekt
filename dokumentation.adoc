@@ -1,0 +1,33 @@
+= Dokumentation – prpr-Projekt „KAIZEN!“
+
+== Ziel
+
+Mein Ziel war es, ein spielbares https://en.wikipedia.org/wiki/Rhythm_game["rhythm game"] mit Java und Processing zu entwickeln. Der Spieler wählt einen Schwierigkeitsgrad und trifft anschliessend die auf vier Lanes ankommenden Notes mit den Tasten `D`, `F`, `J` und `K`. Dabei wollte ich insbesondere lernen, wie sich Audio, zeit abhängige Darstellung, User input und verschiedene Anwendungs zustände sinnvoll miteinander verbinden lassen.
+
+== Vorgehen
+
+Ich habe das Projekt schrittweise aufgebaut. Zuerst erstellte ich ein Klassen diagramm und danach legte ich schon mit dem Hauptmenü und den Screens fort (UI). Danach ergänzte ich die Auswahl des Schwierigkeitsgrads sowie das Laden der passenden MP3- und JSON-Dateien. Anschliessend implementierte ich die zeitbasierte Bewegung der Noten. Als nächstes kommt die eigentliche Treffererkennung, Bewertungen, Points, Combos, verpasste noten und ein Ergebnis bildschirm dazu.
+
+Ich teilte den Code nach Verantwortlichkeiten auf: `MainSketch` steuert den Programmablauf, die Screen-Klassen stellen die Benutzeroberfläche dar und `GameManager` beziehungsweise (noch ausstehend) `GameplaySession` enthalten den Spielablauf und die Spiellogik.
+
+== Schwierigkeiten
+
+Die grösste Schwierigkeit war die Synchronisation zwischen music und Notes. Eine Bewegung pro frame wäre von den FPS abhängig gewesen und hätte mit der Zeit nicht mehr zur Musik gepasst. Zwar hab ich das mit Hilfe von Displaymanager synchronisiert auf die refresh rate vom Hauptmonitor, jedoch reicht das nicht wenn es auf die Millisekunden ankommt. Auch die Lautstärkeregelung der verwendeten Processing-Sound-Bibliothek verhielt sich teilweise anders als erwartet, da hatte ich unnötig Zeit verschwendet.
+
+Eine weitere Herausforderung die ich erwarte wird die Treffer erkennung. Eine Note darf nur einmal getroffen werden, und bei mehreren moten auf derselben Lane muss immer die zeitlich nächste gültige Note gewählt werden. Gleichzeitig müssen zu spät kommende Noten zuverlässig als verpasst gelten.
+
+== Lösungsweg
+
+TODO
+
+== Danksagung
+
+Ich bedanke mich besonders bei unserem Modull leiter https://github.com/MichaelJob[@MichaelJob] für den Unterricht und die Unterstützung während des Moduls.
+
+== Endresultat
+
+TODO
+
+== Reflexion
+
+TODO
