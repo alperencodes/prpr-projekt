@@ -2,6 +2,8 @@ package app;
 
 import app.screen.*;
 import controlP5.ControlP5;
+import game.Beatmap;
+import game.BeatmapLoader;
 import game.Difficulty;
 import game.GameManager;
 import processing.core.PApplet;
@@ -106,7 +108,6 @@ public class MainSketch extends PApplet {
     // ==========================================
 
     public void gameConfig() {
-        println("Play button clicked!");
         setState(GameState.GAME_CONFIG);
     }
 
@@ -125,6 +126,13 @@ public class MainSketch extends PApplet {
     private void selectDifficulty(Difficulty difficulty) {
         GameConfigScreen configScreen = (GameConfigScreen) screens.get(GameState.GAME_CONFIG);
         configScreen.selectDifficulty(difficulty);
+
+        if (currentGame != null) {
+            currentGame.stop();
+        }
+        Beatmap beatmap = BeatmapLoader.load(this, difficulty);
+        currentSong = new SoundFile(this, "songs/" + difficulty.name().toLowerCase() + ".mp3");
+        currentGame = new GameManager(beatmap, currentSong);
     }
 
     public void startGame() {
@@ -135,29 +143,31 @@ public class MainSketch extends PApplet {
         }
 
         selectedDifficulty = difficulty;
-        currentGame = new GameManager();
-        ((PlayingScreen) screens.get(GameState.PLAYING)).setDifficulty(selectedDifficulty);
+        if (currentGame == null || currentGame.getBeatmap().getDifficulty() != selectedDifficulty) {
+            Beatmap beatmap = BeatmapLoader.load(this, selectedDifficulty);
+            currentSong = new SoundFile(this, "songs/" + selectedDifficulty.name().toLowerCase() + ".mp3");
+            currentGame = new GameManager(beatmap, currentSong);
+        }
+
+        ((PlayingScreen) screens.get(GameState.PLAYING)).setGameManager(currentGame);
+        currentGame.start();
         println("STARTING GAME...");
         setState(GameState.PLAYING);
     }
 
     public void Highscores() {
-        println("Highscores button clicked!");
         setState(GameState.HIGHSCORES);
     }
 
     public void Tutorial() {
-        println("Tutorial button clicked!");
         setState(GameState.TUTORIAL);
     }
 
     public void Settings() {
-        println("Settings button clicked!");
         setState(GameState.SETTINGS);
     }
 
     public void Exit() {
-        println("Exiting game...");
         exit();
     }
 
