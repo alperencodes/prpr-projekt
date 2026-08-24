@@ -10,6 +10,18 @@ public class Note {
         this.hitTimeMs = hitTimeMs;
     }
 
+    public Lane getLane() {
+        return lane;
+    }
+
+    public long getHitTimeMs() {
+        return hitTimeMs;
+    }
+
+    public NoteState getState() {
+        return state;
+    }
+
     public boolean isPending() {
         return state == NoteState.PENDING;
     }
