@@ -3,6 +3,8 @@ package app.screen;
 import controlP5.ControlP5;
 import controlP5.Group;
 
+// this class serves as a base for different screens in the application,
+// providing common functionality for showing and hiding UI elements.
 public abstract class AbstractScreen implements Screen {
     protected final Group group;
 
@@ -21,7 +23,5 @@ public abstract class AbstractScreen implements Screen {
     }
 
     @Override
-    public void draw() {
-        // Most screens currently only contain ControlP5 components.
-     }
+    public void draw() {}
 }
