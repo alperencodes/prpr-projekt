@@ -6,6 +6,7 @@ import game.Beatmap;
 import game.BeatmapLoader;
 import game.Difficulty;
 import game.GameManager;
+import game.Lane;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
@@ -14,8 +15,11 @@ import settings.DisplayManager;
 import settings.GameSettings;
 
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Map;
 
+// this class serves as the main entry point for the application,
+// managing the overall game state and coordinating between different screens and game logic.
 public class MainSketch extends PApplet {
     private GameState state = GameState.MENU;
 
@@ -36,6 +40,7 @@ public class MainSketch extends PApplet {
 
     private ControlP5 cp5;
     private final Map<GameState, Screen> screens = new EnumMap<>(GameState.class);
+    private final EnumSet<Lane> heldLanes = EnumSet.noneOf(Lane.class);
     private Screen currentScreen;
 
     private final int WIDTH = 1280;
@@ -65,6 +70,7 @@ public class MainSketch extends PApplet {
         screens.put(GameState.MENU, new MenuScreen(this, cp5));
         screens.put(GameState.GAME_CONFIG, new GameConfigScreen(this, cp5));
         screens.put(GameState.PLAYING, new PlayingScreen(this, cp5));
+        screens.put(GameState.RESULTS, new ResultsScreen(this, cp5));
         screens.put(GameState.SETTINGS, new SettingsScreen(cp5));
         screens.put(GameState.TUTORIAL, new TutorialScreen(cp5));
         screens.put(GameState.HIGHSCORES, new HighscoresScreen(cp5));
@@ -76,6 +82,13 @@ public class MainSketch extends PApplet {
     @Override
     public void draw() {
         background(0);
+
+        if (state == GameState.PLAYING && currentGame != null) {
+            currentGame.update();
+            if (currentGame.isFinished()) {
+                finishGame();
+            }
+        }
 
         if (currentScreen != null) {
             currentScreen.draw();
@@ -95,6 +108,9 @@ public class MainSketch extends PApplet {
         }
 
         this.state = state;
+        if (state != GameState.PLAYING) {
+            heldLanes.clear();
+        }
         currentScreen = screens.get(state);
 
         if (currentScreen != null) {
@@ -102,10 +118,25 @@ public class MainSketch extends PApplet {
         }
     }
 
-    // ==========================================
-    // CONTROLP5 AUTOMATIC EVENT METHODS
-    // These fire automatically based on button names
-    // ==========================================
+    @Override
+    public void keyPressed() {
+        if (state != GameState.PLAYING || currentGame == null) {
+            return;
+        }
+
+        Lane lane = Lane.fromKey(key);
+        if (lane != null && heldLanes.add(lane)) {
+            currentGame.hit(lane);
+        }
+    }
+
+    @Override
+    public void keyReleased() {
+        Lane lane = Lane.fromKey(key);
+        if (lane != null) {
+            heldLanes.remove(lane);
+        }
+    }
 
     public void gameConfig() {
         setState(GameState.GAME_CONFIG);
@@ -143,7 +174,9 @@ public class MainSketch extends PApplet {
         }
 
         selectedDifficulty = difficulty;
-        if (currentGame == null || currentGame.getBeatmap().getDifficulty() != selectedDifficulty) {
+        if (currentGame == null
+                || currentGame.isStarted()
+                || currentGame.getBeatmap().difficulty() != selectedDifficulty) {
             Beatmap beatmap = BeatmapLoader.load(this, selectedDifficulty);
             currentSong = new SoundFile(this, "songs/" + selectedDifficulty.name().toLowerCase() + ".mp3");
             currentGame = new GameManager(beatmap, currentSong);
@@ -153,6 +186,23 @@ public class MainSketch extends PApplet {
         currentGame.start();
         println("STARTING GAME...");
         setState(GameState.PLAYING);
+    }
+
+    private void finishGame() {
+        ResultsScreen resultsScreen = (ResultsScreen) screens.get(GameState.RESULTS);
+        resultsScreen.setResults(
+                currentGame.getScoreTracker().getScore(),
+                currentGame.getScoreTracker().getMaximumCombo()
+        );
+        setState(GameState.RESULTS);
+    }
+
+    public void playAgain() {
+        setState(GameState.GAME_CONFIG);
+    }
+
+    public void returnToMenu() {
+        setState(GameState.MENU);
     }
 
     public void Highscores() {
