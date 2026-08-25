@@ -3,6 +3,7 @@ package app.screen;
 import controlP5.ControlP5;
 import game.Beatmap;
 import game.GameManager;
+import game.HitJudgement;
 import game.Lane;
 import game.Note;
 import processing.core.PApplet;
@@ -36,6 +37,7 @@ public class PlayingScreen extends AbstractScreen {
         float receptorY = sketch.height - 105f;
         drawLanes(laneAreaX, receptorY);
         drawNotes(laneAreaX, receptorY);
+        drawHud();
     }
 
     private void drawLanes(float laneAreaX, float receptorY) {
@@ -58,11 +60,11 @@ public class PlayingScreen extends AbstractScreen {
     private void drawNotes(float laneAreaX, float receptorY) {
         Beatmap beatmap = gameManager.getBeatmap();
         double songTimeMs = gameManager.getSmoothSongTimeMs();
-        long approachTimeMs = beatmap.getApproachTimeMs();
+        long approachTimeMs = beatmap.approachTimeMs();
 
         sketch.noStroke();
         sketch.fill(255, 20, 147);
-        for (Note note : beatmap.getNotes()) {
+        for (Note note : beatmap.notes()) {
             double timeUntilHitMs = note.getHitTimeMs() - songTimeMs;
             if (!note.isPending()
                     || timeUntilHitMs > approachTimeMs
@@ -74,6 +76,23 @@ public class PlayingScreen extends AbstractScreen {
             float y = PApplet.lerp(SPAWN_Y, receptorY, progress);
             float x = laneAreaX + note.getLane().ordinal() * LANE_WIDTH + 8;
             sketch.rect(x, y, LANE_WIDTH - 16, NOTE_HEIGHT);
+        }
+    }
+
+    private void drawHud() {
+        int score = gameManager.getScoreTracker().getScore();
+        int combo = gameManager.getScoreTracker().getCombo();
+        HitJudgement judgement = gameManager.getLatestJudgement();
+
+        sketch.noStroke();
+        sketch.fill(255);
+        sketch.textAlign(PApplet.LEFT, PApplet.TOP);
+        sketch.text("Score: " + score, 35, 30);
+        sketch.text("Combo: " + combo, 35, 75);
+
+        if (judgement != null) {
+            sketch.textAlign(PApplet.CENTER, PApplet.CENTER);
+            sketch.text(judgement.getLabel(), sketch.width / 2f, sketch.height / 2f);
         }
     }
 }
