@@ -10,3 +10,7 @@ target/
 
 # Logs
 *.log
+
+# Runtime data
+data/*.db
+data/*.db-*

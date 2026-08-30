@@ -154,6 +154,13 @@
             <version>${jogamp.version}</version>
         </dependency>
 
+        <!-- Local highscore persistence -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.50.3.0</version>
+        </dependency>
+
         <!-- JUnit -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
