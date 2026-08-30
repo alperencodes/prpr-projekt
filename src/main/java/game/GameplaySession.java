@@ -4,12 +4,14 @@ package game;
 // including the beatmap, score, and hit judgements
 public class GameplaySession {
     private final Beatmap beatmap;
+    private final GameConfig config;
     private final ScoreTracker scoreTracker = new ScoreTracker();
     private HitJudgement latestJudgement;
     private int resolvedNotes;
 
-    public GameplaySession(Beatmap beatmap) {
+    public GameplaySession(Beatmap beatmap, GameConfig config) {
         this.beatmap = beatmap;
+        this.config = config;
     }
 
     public HitJudgement hit(Lane lane, long songTimeMs) {
@@ -73,5 +75,9 @@ public class GameplaySession {
 
     public HitJudgement getLatestJudgement() {
         return latestJudgement;
+    }
+
+    public GameConfig getConfig() {
+        return config;
     }
 }

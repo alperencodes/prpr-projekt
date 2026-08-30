@@ -49,6 +49,6 @@ class GameplaySessionTest {
 
     private GameplaySession session(Note... notes) { // the ... is a varargs parameter, allowing multiple Note objects to be passed
         Beatmap beatmap = new Beatmap("song", "artist", Difficulty.EASY, 120, 1_500, List.of(notes));
-        return new GameplaySession(beatmap);
+        return new GameplaySession(beatmap, new GameConfig(Difficulty.EASY, "Test player"));
     }
 }

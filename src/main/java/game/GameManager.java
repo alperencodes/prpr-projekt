@@ -15,15 +15,16 @@ public class GameManager {
     private long lastClockReadNanos;
     private boolean started;
     private boolean finished;
+    private boolean resultSaved;
 
     // this class is responsible for managing the state of a gameplay session,
     // including the beatmap, song, and score tracking.
     // It provides methods to start and stop the game, update the game state,
     // handle player input, and retrieve relevant information about the current session.
-    public GameManager(Beatmap beatmap, SoundFile song) {
+    public GameManager(Beatmap beatmap, SoundFile song, GameConfig config) {
         this.beatmap = beatmap;
         this.song = song;
-        this.session = new GameplaySession(beatmap);
+        this.session = new GameplaySession(beatmap, config);
     }
 
     public void start() {
@@ -110,5 +111,17 @@ public class GameManager {
 
     public boolean isFinished() {
         return finished;
+    }
+
+    public GameplaySession getSession() {
+        return session;
+    }
+
+    public boolean markResultSaved() {
+        if (!finished || resultSaved) {
+            return false;
+        }
+        resultSaved = true;
+        return true;
     }
 }

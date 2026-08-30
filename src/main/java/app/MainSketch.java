@@ -6,7 +6,10 @@ import game.Beatmap;
 import game.BeatmapLoader;
 import game.Difficulty;
 import game.GameManager;
+import game.GameConfig;
 import game.Lane;
+import highscore.Highscore;
+import highscore.HighscoreRepository;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
@@ -17,6 +20,9 @@ import settings.GameSettings;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 // this class serves as the main entry point for the application,
 // managing the overall game state and coordinating between different screens and game logic.
@@ -27,8 +33,7 @@ public class MainSketch extends PApplet {
     private GameSettings gameSettings;
 
     private SoundFile currentSong;
-    private String playerName;
-    private Difficulty selectedDifficulty;
+    private HighscoreRepository highscoreRepository;
     private long countdownStartMs;
 
     private int tutorialPage;
@@ -67,13 +72,22 @@ public class MainSketch extends PApplet {
         cp5.setFont(font);
         cp5.setAutoDraw(false);
 
+        Path databasePath = Path.of("data", "kaizen.db");
+        try {
+            Files.createDirectories(databasePath.toAbsolutePath().getParent());
+        } catch (IOException exception) {
+            throw new IllegalStateException("Could not create highscore data directory", exception);
+        }
+        highscoreRepository = new HighscoreRepository(databasePath);
+        highscoreRepository.initialize();
+
         screens.put(GameState.MENU, new MenuScreen(this, cp5));
         screens.put(GameState.GAME_CONFIG, new GameConfigScreen(this, cp5));
         screens.put(GameState.PLAYING, new PlayingScreen(this, cp5));
         screens.put(GameState.RESULTS, new ResultsScreen(this, cp5));
         screens.put(GameState.SETTINGS, new SettingsScreen(cp5));
         screens.put(GameState.TUTORIAL, new TutorialScreen(cp5));
-        screens.put(GameState.HIGHSCORES, new HighscoresScreen(cp5));
+        screens.put(GameState.HIGHSCORES, new HighscoresScreen(this, cp5, highscoreRepository));
 
         screens.values().forEach(Screen::hide);
         setState(GameState.MENU);
@@ -157,30 +171,23 @@ public class MainSketch extends PApplet {
     private void selectDifficulty(Difficulty difficulty) {
         GameConfigScreen configScreen = (GameConfigScreen) screens.get(GameState.GAME_CONFIG);
         configScreen.selectDifficulty(difficulty);
-
-        if (currentGame != null) {
-            currentGame.stop();
-        }
-        Beatmap beatmap = BeatmapLoader.load(this, difficulty);
-        currentSong = new SoundFile(this, "songs/" + difficulty.name().toLowerCase() + ".mp3");
-        currentGame = new GameManager(beatmap, currentSong);
     }
 
     public void startGame() {
         GameConfigScreen configScreen = (GameConfigScreen) screens.get(GameState.GAME_CONFIG);
         Difficulty difficulty = configScreen.getSelectedDifficulty();
-        if (difficulty == null) {
+        String playerName = configScreen.getValidPlayerName();
+        if (difficulty == null || playerName == null) {
             return;
         }
 
-        selectedDifficulty = difficulty;
-        if (currentGame == null
-                || currentGame.isStarted()
-                || currentGame.getBeatmap().difficulty() != selectedDifficulty) {
-            Beatmap beatmap = BeatmapLoader.load(this, selectedDifficulty);
-            currentSong = new SoundFile(this, "songs/" + selectedDifficulty.name().toLowerCase() + ".mp3");
-            currentGame = new GameManager(beatmap, currentSong);
+        if (currentGame != null) {
+            currentGame.stop();
         }
+        GameConfig config = new GameConfig(difficulty, playerName);
+        Beatmap beatmap = BeatmapLoader.load(this, difficulty);
+        currentSong = new SoundFile(this, "songs/" + difficulty.name().toLowerCase() + ".mp3");
+        currentGame = new GameManager(beatmap, currentSong, config);
 
         ((PlayingScreen) screens.get(GameState.PLAYING)).setGameManager(currentGame);
         currentGame.start();
@@ -189,6 +196,16 @@ public class MainSketch extends PApplet {
     }
 
     private void finishGame() {
+        if (!currentGame.markResultSaved()) {
+            return;
+        }
+        GameConfig config = currentGame.getSession().getConfig();
+        highscoreRepository.save(new Highscore(
+                config.playerName(),
+                config.difficulty(),
+                currentGame.getScoreTracker().getScore(),
+                currentGame.getScoreTracker().getMaximumCombo()
+        ));
         ResultsScreen resultsScreen = (ResultsScreen) screens.get(GameState.RESULTS);
         resultsScreen.setResults(
                 currentGame.getScoreTracker().getScore(),
