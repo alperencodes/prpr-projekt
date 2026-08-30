@@ -9,6 +9,8 @@ import processing.core.PApplet;
 import java.util.List;
 
 public class HighscoresScreen extends AbstractScreen {
+    private static final float HORIZONTAL_MARGIN = 80f;
+
     private final HighscoreRepository repository;
     private final Textarea leaderboard;
 
@@ -16,8 +18,8 @@ public class HighscoresScreen extends AbstractScreen {
         super(cp5, "highscoresGroup");
         this.repository = repository;
         leaderboard = cp5.addTextarea("leaderboard")
-                .setPosition(sketch.width / 2f - 390, 90)
-                .setSize(780, 530)
+                .setPosition(HORIZONTAL_MARGIN, 90)
+                .setSize(sketch.width - Math.round(HORIZONTAL_MARGIN * 2), 530)
                 .hideScrollbar()
                 .moveTo(group);
     }
