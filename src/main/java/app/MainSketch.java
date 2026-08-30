@@ -16,6 +16,7 @@ import processing.core.PImage;
 import processing.sound.SoundFile;
 import settings.DisplayManager;
 import settings.GameSettings;
+import settings.GameSettingsStore;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -31,6 +32,7 @@ public class MainSketch extends PApplet {
 
     private GameManager currentGame;
     private GameSettings gameSettings;
+    private GameSettingsStore gameSettingsStore;
 
     private SoundFile currentSong;
     private HighscoreRepository highscoreRepository;
@@ -58,6 +60,8 @@ public class MainSketch extends PApplet {
 
     @Override
     public void setup() {
+        gameSettingsStore = new GameSettingsStore(Path.of("data", "settings.properties"));
+        gameSettings = gameSettingsStore.load();
         this.displayManager = new DisplayManager();
         final int frameRate = displayManager.isRateKnown() ? displayManager.getRefreshRate() : 60;
         frameRate(frameRate);
@@ -85,7 +89,7 @@ public class MainSketch extends PApplet {
         screens.put(GameState.GAME_CONFIG, new GameConfigScreen(this, cp5));
         screens.put(GameState.PLAYING, new PlayingScreen(this, cp5));
         screens.put(GameState.RESULTS, new ResultsScreen(this, cp5));
-        screens.put(GameState.SETTINGS, new SettingsScreen(cp5));
+        screens.put(GameState.SETTINGS, new SettingsScreen(this, cp5, gameSettings));
         screens.put(GameState.TUTORIAL, new TutorialScreen(cp5));
         screens.put(GameState.HIGHSCORES, new HighscoresScreen(this, cp5, highscoreRepository));
 
@@ -112,11 +116,22 @@ public class MainSketch extends PApplet {
 
         cp5.draw();
 
+        if (gameSettings.isShowFps()) {
+            fill(255);
+            textAlign(LEFT, TOP);
+            textSize(18);
+            text("FPS: " + Math.round(frameRate), 10, 10);
+            textFont(font);
+        }
+
         imageMode(CENTER);
         image(cursorImg, mouseX, mouseY, 100, 100);
     }
 
     public void setState(GameState state) {
+        if (this.state == GameState.SETTINGS && state != GameState.SETTINGS) {
+            gameSettingsStore.save(gameSettings);
+        }
         if (currentScreen != null) {
             currentScreen.hide();
         }
@@ -173,6 +188,13 @@ public class MainSketch extends PApplet {
         configScreen.selectDifficulty(difficulty);
     }
 
+    @Override
+    public void mouseReleased() {
+        if (state == GameState.SETTINGS) {
+            gameSettingsStore.save(gameSettings);
+        }
+    }
+
     public void startGame() {
         GameConfigScreen configScreen = (GameConfigScreen) screens.get(GameState.GAME_CONFIG);
         Difficulty difficulty = configScreen.getSelectedDifficulty();
@@ -187,7 +209,7 @@ public class MainSketch extends PApplet {
         GameConfig config = new GameConfig(difficulty, playerName);
         Beatmap beatmap = BeatmapLoader.load(this, difficulty);
         currentSong = new SoundFile(this, "songs/" + difficulty.name().toLowerCase() + ".mp3");
-        currentGame = new GameManager(beatmap, currentSong, config);
+        currentGame = new GameManager(beatmap, currentSong, config, gameSettings);
 
         ((PlayingScreen) screens.get(GameState.PLAYING)).setGameManager(currentGame);
         currentGame.start();
@@ -232,6 +254,27 @@ public class MainSketch extends PApplet {
 
     public void Settings() {
         setState(GameState.SETTINGS);
+    }
+
+    public void songVolume(float percent) {
+        gameSettings.setSongVolume(percent / 100f);
+        if (currentSong != null) {
+            currentSong.amp(gameSettings.getSongVolume());
+        }
+    }
+
+    public void showFps(boolean enabled) {
+        gameSettings.setShowFps(enabled);
+        gameSettingsStore.save(gameSettings);
+    }
+
+    public void resetSettings() {
+        gameSettings.resetToDefaults();
+        if (currentSong != null) {
+            currentSong.amp(gameSettings.getSongVolume());
+        }
+        ((SettingsScreen) screens.get(GameState.SETTINGS)).syncControlsFromSettings();
+        gameSettingsStore.save(gameSettings);
     }
 
     public void Exit() {

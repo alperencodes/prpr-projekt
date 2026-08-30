@@ -1,16 +1,15 @@
 package game;
 
 import processing.sound.SoundFile;
-import processing.sound.Sound;
+import settings.GameSettings;
 
 // this class manages the state of a gameplay session, including the beatmap, song, and score tracking
 public class GameManager {
     private static final double MAX_SMOOTHING_OFFSET_MS = 20.0;
-    private static final float SONG_VOLUME = 0.05f;
-
     private final Beatmap beatmap;
     private final SoundFile song;
     private final GameplaySession session;
+    private final GameSettings gameSettings;
     private double smoothedSongTimeMs;
     private long lastClockReadNanos;
     private boolean started;
@@ -21,16 +20,17 @@ public class GameManager {
     // including the beatmap, song, and score tracking.
     // It provides methods to start and stop the game, update the game state,
     // handle player input, and retrieve relevant information about the current session.
-    public GameManager(Beatmap beatmap, SoundFile song, GameConfig config) {
+    public GameManager(Beatmap beatmap, SoundFile song, GameConfig config, GameSettings gameSettings) {
         this.beatmap = beatmap;
         this.song = song;
         this.session = new GameplaySession(beatmap, config);
+        this.gameSettings = gameSettings;
     }
 
     public void start() {
         song.cue(0);
-        Sound.volume(SONG_VOLUME);
         song.play();
+        song.amp(gameSettings.getSongVolume());
         started = true;
         finished = false;
         
