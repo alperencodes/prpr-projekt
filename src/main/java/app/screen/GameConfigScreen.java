@@ -2,6 +2,9 @@ package app.screen;
 
 import controlP5.Button;
 import controlP5.ControlP5;
+import controlP5.Textarea;
+import controlP5.Textfield;
+import game.GameConfig;
 import game.Difficulty;
 import processing.core.PApplet;
 
@@ -13,13 +16,36 @@ public class GameConfigScreen extends AbstractScreen {
     private final Button mediumButton;
     private final Button hardButton;
     private final Button startButton;
+    private final Textfield playerNameField;
+    private final Textarea validationMessage;
     private Difficulty selectedDifficulty;
 
     public GameConfigScreen(PApplet sketch, ControlP5 cp5) {
         super(cp5, "gameConfigGroup");
 
+        cp5.addTextarea("playerNamePrompt")
+                .setPosition(sketch.width / 2f - 180, 85)
+                .setSize(360, 35)
+                .setText("Player name")
+                .hideScrollbar()
+                .moveTo(group);
+
+        playerNameField = cp5.addTextfield("playerNameInput")
+                .setPosition(sketch.width / 2f - 180, 120)
+                .setSize(360, 42)
+                .setAutoClear(false)
+                .moveTo(group);
+        playerNameField.getCaptionLabel().setText("");
+
+        validationMessage = cp5.addTextarea("playerNameValidation")
+                .setPosition(sketch.width / 2f - 180, 165)
+                .setSize(420, 30)
+                .setText("")
+                .hideScrollbar()
+                .moveTo(group);
+
         cp5.addTextarea("difficultyPrompt")
-                .setPosition(sketch.width / 2f - 180, 140)
+                .setPosition(sketch.width / 2f - 180, 195)
                 .setSize(360, 50)
                 .setText("Choose a difficulty")
                 .hideScrollbar()
@@ -29,10 +55,10 @@ public class GameConfigScreen extends AbstractScreen {
         int buttonHeight = 45;
         float buttonX = sketch.width / 2f - buttonWidth / 2f;
 
-        easyButton = addButton(cp5, "selectEasy", "Easy", buttonX, 230, buttonWidth, buttonHeight);
-        mediumButton = addButton(cp5, "selectMedium", "Medium", buttonX, 300, buttonWidth, buttonHeight);
-        hardButton = addButton(cp5, "selectHard", "Hard", buttonX, 370, buttonWidth, buttonHeight);
-        startButton = addButton(cp5, "startGame", "Start game", buttonX, 470, buttonWidth, buttonHeight);
+        easyButton = addButton(cp5, "selectEasy", "Easy", buttonX, 270, buttonWidth, buttonHeight);
+        mediumButton = addButton(cp5, "selectMedium", "Medium", buttonX, 340, buttonWidth, buttonHeight);
+        hardButton = addButton(cp5, "selectHard", "Hard", buttonX, 410, buttonWidth, buttonHeight);
+        startButton = addButton(cp5, "startGame", "Start game", buttonX, 510, buttonWidth, buttonHeight);
         startButton.hide();
     }
 
@@ -46,6 +72,20 @@ public class GameConfigScreen extends AbstractScreen {
 
     public Difficulty getSelectedDifficulty() {
         return selectedDifficulty;
+    }
+
+    public String getValidPlayerName() {
+        String playerName = playerNameField.getText().trim();
+        if (playerName.isEmpty()) {
+            validationMessage.setText("Enter a player name");
+            return null;
+        }
+        if (playerName.length() > GameConfig.MAX_PLAYER_NAME_LENGTH) {
+            validationMessage.setText("Player name must be at most " + GameConfig.MAX_PLAYER_NAME_LENGTH + " characters");
+            return null;
+        }
+        validationMessage.setText("");
+        return playerName;
     }
 
     @Override
