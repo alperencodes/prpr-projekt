@@ -14,3 +14,4 @@ target/
 # Runtime data
 data/*.db
 data/*.db-*
+data/settings.properties
