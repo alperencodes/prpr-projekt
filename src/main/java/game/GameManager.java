@@ -106,10 +106,6 @@ public class GameManager {
         return session.getLatestJudgement();
     }
 
-    public boolean isStarted() {
-        return started;
-    }
-
     public boolean isFinished() {
         return finished;
     }
