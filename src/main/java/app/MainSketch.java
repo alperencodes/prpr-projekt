@@ -244,6 +244,14 @@ public class MainSketch extends PApplet {
         setState(GameState.MENU);
     }
 
+    public void highscoresMainMenu() {
+        returnToMenu();
+    }
+
+    public void gameConfigMainMenu() {
+        returnToMenu();
+    }
+
     public void Highscores() {
         setState(GameState.HIGHSCORES);
     }

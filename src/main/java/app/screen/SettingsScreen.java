@@ -24,7 +24,7 @@ public class SettingsScreen extends AbstractScreen {
         cp5.addTextarea("songVolumeLabel")
                 .setPosition(x, 145)
                 .setSize(360, 35)
-                .setText("SONG VOLUME")
+                .setText("song volume")
                 .hideScrollbar()
                 .moveTo(group);
 
@@ -46,12 +46,12 @@ public class SettingsScreen extends AbstractScreen {
         cp5.addTextarea("showFpsLabel")
                 .setPosition(x + 75, 279)
                 .setSize(285, 35)
-                .setText("SHOW FPS")
+                .setText("show fps")
                 .hideScrollbar()
                 .moveTo(group);
 
-        addButton(cp5, "resetSettings", "Reset to defaults", x, 380, 360, 45);
-        addButton(cp5, "returnToMenu", "Main menu", x, 450, 360, 45);
+        addButton(cp5, "resetSettings", "reset to defaults", x, 380, 360, 45);
+        addButton(cp5, "returnToMenu", "main menu", x, 450, 360, 45);
     }
 
     @Override

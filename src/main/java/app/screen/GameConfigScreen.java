@@ -55,10 +55,11 @@ public class GameConfigScreen extends AbstractScreen {
         int buttonHeight = 45;
         float buttonX = sketch.width / 2f - buttonWidth / 2f;
 
-        easyButton = addButton(cp5, "selectEasy", "Easy", buttonX, 270, buttonWidth, buttonHeight);
-        mediumButton = addButton(cp5, "selectMedium", "Medium", buttonX, 340, buttonWidth, buttonHeight);
-        hardButton = addButton(cp5, "selectHard", "Hard", buttonX, 410, buttonWidth, buttonHeight);
-        startButton = addButton(cp5, "startGame", "Start game", buttonX, 510, buttonWidth, buttonHeight);
+        easyButton = addButton(cp5, "selectEasy", "easy", buttonX, 270, buttonWidth, buttonHeight);
+        mediumButton = addButton(cp5, "selectMedium", "medium", buttonX, 340, buttonWidth, buttonHeight);
+        hardButton = addButton(cp5, "selectHard", "hard", buttonX, 410, buttonWidth, buttonHeight);
+        startButton = addButton(cp5, "startGame", "start game", buttonX, 510, buttonWidth, buttonHeight);
+        addButton(cp5, "gameConfigMainMenu", "main menu", buttonX, 600, buttonWidth, buttonHeight);
         startButton.hide();
     }
 

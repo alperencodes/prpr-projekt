@@ -19,16 +19,16 @@ public class ResultsScreen extends AbstractScreen {
         resultsText = cp5.addTextarea("roundResults")
                 .setPosition(sketch.width / 2f - 180, 150)
                 .setSize(360, 150)
-                .setText("Round complete")
+                .setText("round complete!")
                 .hideScrollbar()
                 .moveTo(group);
 
-        addButton(cp5, "playAgain", "Play again", sketch.width / 2f - 90, 360);
-        addButton(cp5, "returnToMenu", "Main menu", sketch.width / 2f - 90, 430);
+        addButton(cp5, "playAgain", "play again", sketch.width / 2f - 90, 360);
+        addButton(cp5, "returnToMenu", "main menu", sketch.width / 2f - 90, 430);
     }
 
     public void setResults(int score, int maximumCombo) {
-        resultsText.setText("Round complete\n\nScore: " + score + "\nMax combo: " + maximumCombo);
+        resultsText.setText("round complete!\n\nScore: " + score + "\nMax combo: " + maximumCombo);
     }
 
     private void addButton(ControlP5 cp5, String name, String label, float x, float y) {

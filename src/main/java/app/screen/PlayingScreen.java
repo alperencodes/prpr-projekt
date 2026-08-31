@@ -87,8 +87,8 @@ public class PlayingScreen extends AbstractScreen {
         sketch.noStroke();
         sketch.fill(255);
         sketch.textAlign(PApplet.LEFT, PApplet.TOP);
-        sketch.text("Score: " + score, 35, 30);
-        sketch.text("Combo: " + combo, 35, 75);
+        sketch.text("score: " + score, 35, 30);
+        sketch.text("combo: " + combo, 35, 75);
 
         if (judgement != null) {
             sketch.textAlign(PApplet.CENTER, PApplet.CENTER);
