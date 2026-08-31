@@ -3,7 +3,7 @@
 KAIZEN! is a four-lane rhythm game built with Java, Processing, ControlP5, and Processing Sound. Choose a difficulty, play the matching beatmap, and hit notes in time with the music. Note that this game is still WIP.
 
 > [!NOTE]
-> A more detailed documentation can be found inside [dokumentation.adoc](dokumentation.adoc).
+> A more detailed documentation can be found inside [DOKUMENTATION.adoc](DOKUMENTATION.adoc).
 
 ## Controls
 

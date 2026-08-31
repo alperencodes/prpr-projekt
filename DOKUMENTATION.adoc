@@ -1,0 +1,51 @@
+= Dokumentation - prpr-Projekt "KAIZEN!"
+
+== Ziel
+
+Mein Ziel war es, ein spielbares https://en.wikipedia.org/wiki/Rhythm_game["rhythm game"] mit Java und Processing zu entwickeln. Der Spieler wählt einen Schwierigkeitsgrad und trifft anschliessend die auf vier Lanes ankommenden Notes mit den Tasten `D`, `F`, `J` und `K`. Dabei wollte ich insbesondere lernen, wie sich Audio, zeit abhängige Darstellung, User input und verschiedene Anwendungs zustände sinnvoll miteinander verbinden lassen.
+
+== Vorgehen
+
+Ich habe das Projekt schrittweise aufgebaut. Zuerst erstellte ich ein Klassen diagramm und danach legte ich schon mit dem Hauptmenü und den Screens fort (UI). Danach ergänzte ich die Auswahl des Schwierigkeitsgrads sowie das Laden der passenden MP3- und JSON-Dateien. Anschliessend implementierte ich die zeit/ms-basierte Bewegung der Noten. Danach kamen die eigentliche Treffererkennung, Bewertungen, Points, Combos, verpasste noten und ein Ergebnis bildschirm dazu.
+
+Ich teilte den Code nach Verantwortlichkeiten auf: `MainSketch` steuert den Programmablauf, die Screen-classen stellen die Benutzeroberfläche dar und `GameManager` bzw. `GameplaySession` enthalten den Spielablauf und die Spiel logik.
+
+Das Package `app` enthält mit `MainSketch` den Einstiegs punkt und mit `GameState` die verschiedenen Spielzustände. In `app.screen` befinden sich die einzelnen Screens für Menü, Configuration, Spiel, Ergebnis, Highscore, Settings und Tutorial. Alle Screens verwenden das gemeinsame `Screen`-Interface und `AbstractScreen`, damit ihre ControlP5 Gruppen beim Wechsel ein- und ausgeblendet werden können.
+
+Im package `game` liegen die Klassen für Beatmaps, Notes, Lanes, Treffer bewertungen und Punkte. `GameManager` verbindet den Song mit einer `GameplaySession`. Die Session wählt gültige Notes aus und aktualisiert Score und Combo über den `ScoreTracker`. `highscore` speichert abgeschlossene Runden mit SQLite und `settings` enthält die Einstellungen, deren Speicherung und die Ermittlung der Bildschirm refresh rate.
+
+== Schwierigkeiten
+
+Die grösste Schwierigkeit war die Synchronisation zwischen music und Notes. Eine Bewegung pro frame wäre von den FPS abhängig gewesen und hätte mit der Zeit nicht mehr zur Musik gepasst. Zwar hab ich das mit Hilfe von Displaymanager synchronisiert auf die refresh rate vom Hauptmonitor, jedoch reicht das nicht wenn es auf die Millisekunden ankommt. Auch die Lautstärkeregelung der verwendeten Processing-Sound-Bibliothek verhielt sich teilweise anders als erwartet, da hatte ich unnötig Zeit verschwendet.
+
+Eine weitere Herausforderung war die Treffer erkennung. Eine Note darf nur einmal getroffen werden, und bei mehreren moten auf derselben Lane muss immer die zeitlich nächste gültige Note gewählt werden. Gleichzeitig müssen zu spät kommende Noten zuverlässig als verpasst gelten.
+
+Später kamen noch die Speicherung der Highscores und Settings dazu. Dabei musste ich darauf achten, dass die SQLite table nur einmal sicher initialisiert wird, SQL werte nicht direkt zusammengesetzt werden und alle Datenbank ressourcen wieder geschlossen werden. Bei den Settings war wichtig, dass fehlende oder ungültige Dateien nicht das ganze Spiel stoppen.
+
+Auch das Aufteilen der Control P5 Elemente auf mehrere Screens brauchte etwas Arbeit. Beim ändern der states dürfen nur die Controls des aktuellen Screens sichtbar sein. Ausserdem mussten die Einstellungen mit den Controls synchronisiert bleiben und beim Verlassen gespeichert werden.
+
+== Lösungsweg
+
+Die Notes werden nicht pro frame um einen festen Wert bewegt. Stattdessen wird ihre Position jedes Mal aus der aktuellen Song zeit, ihrer Treffer zeit und der `approachTimeMs` der Beatmap berechnet. `GameManager` liest die Position des Songs und glättet sie für die Darstellung leicht. Dadurch bleibt die Bewegung auch bei unterschiedlichen FPS an die Musik gebunden.
+
+Beim Drücken von `D`, `F`, `J` oder `K` sucht `GameplaySession` nur nach noch ausstehenden Notes auf der passenden Lane. Von diesen wird die zeitlich nächste Note innerhalb des erlaubten Treffer fensters gewählt. Danach erhält sie den Zustand `HIT` und kann nicht nochmals gewertet werden. `HitJudgement` ordnet die Zeitdifferenz den Bewertungen 300, 200, 100, 50 oder Miss zu. `ScoreTracker` addiert die Punkte, erhöht die Combo bei einem Treffer und setzt sie bei einem Miss zurück. Noten, deren Treffer fenster vorbei ist, werden beim Update als `MISSED` markiert. Wenn der Song endet, werden auch alle übrigen Noten als verpasst gewertet.
+
+Für jeden Schwierigkeits grad gibt es eine eigene JSON-beatmap und eine eigene MP3 Datei. `BeatmapLoader` lädt passend zu easy, medium oder hard die Metadaten und Notes. Vor dem Start wird zusätzlich der Name des Spielers geprüft. `MainSketch` erstellt danach den Song und den `GameManager` und wechselt in den PlayingScreen.
+
+Nach einer abgeschlossenen Runde wird das Resultat einmalig als Highscore gespeichert. `HighscoreRepository` verwendet dafür SQLite, prepared statements und TWR (try-with-resources). Die besten Einträge werden nach Score und danach nach maximaler Combo sortiert angezeigt. Lautstärke und FPS-Anzeige werden in `GameSettings` validiert und durch `GameSettingsStore` in einer Properties-Datei gespeichert. Fehlt die Datei oder ist sie ungültig, werden Standardwerte verwendet.
+
+== Danksagung
+
+Ich bedanke mich besonders bei unserem Modull leiter https://github.com/MichaelJob[@MichaelJob] für den Unterricht und die Unterstützung während des Moduls.
+
+== Endresultat
+
+Das Endresultat ist ein spielbares Rhythm game mit drei Schwierigkeitsgraden und vier Lanes für `D`, `F`, `J` und `K`. Vor einer Runde werden Spielername und Schwierigkeit gewählt. Während dem Spiel werden Score, Combo und die letzte Bewertung angezeigt. Nach dem letzten Treffer oder dem Ende des Songs erscheint der Ergebnis bildschirm und die Runde wird in der SQLite Highscore-Datenbank gespeichert.
+
+Das Spiel besitzt getrennte Screens für Main menu, Konfiguration, Gameplay, Resultat, Highscores und Settings. Die Lautstärke kann verändert, die FPS-Anzeige aktiviert und alles auf die Default werte zurückgesetzt werden. Für easy, medium und hard sind eigene Songs und fertige Beatmaps vorhanden.
+
+== Reflexion
+
+Durch das Projekt habe ich besser verstanden, wie man eine grössere Processing app in UI, state management und eigentliche Spiel logik aufteilt. Gut funktioniert hat das schrittweise Vorgehen und dass die kritischen Teile wie Trefferfenster, Settings und Highscores Tests erhalten haben. Unterschätzt habe ich vor allem die genaue Synchronisation mit Audio und den Aufwand für die Beatmaps. Zwar habe ich für diese ein einfaches tool vibecoded sodass ich die JSON's/Beatmaps einfacher generieren kann (siehe https://github.com/alperencodes/ms-stopwatch[ms-stopwatch]), aber es war dennoch nicht einfach, exakte Beatmaps zu schreiben/designen um ein gutes Spiel erlebnis zu erlauben. Beim nächsten Projekt würde ich früher einen kleinen spielbaren Prototyp mit einer vollständigen Runde bauen und erst danach weitere Screens planen. Das Endresultat entspricht dennoch grösstenteils meiner ursprünglichen Idee.
+
+Ich bin sehr zufrieden mit dem Projekt und freue mich auf Weiteres!
