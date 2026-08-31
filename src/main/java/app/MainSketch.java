@@ -87,7 +87,7 @@ public class MainSketch extends PApplet {
         screens.put(GameState.PLAYING, new PlayingScreen(this, cp5));
         screens.put(GameState.RESULTS, new ResultsScreen(this, cp5));
         screens.put(GameState.SETTINGS, new SettingsScreen(this, cp5, gameSettings));
-        screens.put(GameState.TUTORIAL, new TutorialScreen(cp5));
+        screens.put(GameState.TUTORIAL, new TutorialScreen(this, cp5));
         screens.put(GameState.HIGHSCORES, new HighscoresScreen(this, cp5, highscoreRepository));
 
         screens.values().forEach(Screen::hide);
@@ -260,6 +260,18 @@ public class MainSketch extends PApplet {
 
     public void Tutorial() {
         setState(GameState.TUTORIAL);
+    }
+
+    public void tutorialPrev() {
+        ((TutorialScreen) screens.get(GameState.TUTORIAL)).previousPage();
+    }
+
+    public void tutorialNext() {
+        ((TutorialScreen) screens.get(GameState.TUTORIAL)).nextPage();
+    }
+
+    public void tutorialMainMenu() {
+        returnToMenu();
     }
 
     public void Settings() {
