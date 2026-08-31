@@ -47,12 +47,13 @@ public class GameManager {
             return;
         }
 
-        session.update(getSongTimeMs());
+        long songTimeMs = getSongTimeMs();
+        session.update(songTimeMs);
         if (session.isComplete()) {
             finished = true;
             song.stop();
         } else if (!song.isPlaying()
-                && getSongTimeMs() >= Math.round(song.duration() * 1000.0) - 100) {
+                && songTimeMs >= Math.round(song.duration() * 1000.0) - 100) {
             session.missAllPendingNotes();
             finished = true;
         }
