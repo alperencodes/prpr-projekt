@@ -1,6 +1,7 @@
 package game;
 
-// this class represents the judgement of a hit in the game, based on the timing difference between the note's hit time and the player's input
+// this class represents the judgement of a hit in the game,
+// based on the timing difference between the note's hit time and the player's input
 public enum HitJudgement {
     PERFECT_300(45, 300, "300"),
     GREAT_200(90, 200, "200"),

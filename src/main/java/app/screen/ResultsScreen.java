@@ -6,7 +6,6 @@ import processing.core.PApplet;
 
 // this class is responsible for displaying the results of a round,
 // including the score and maximum combo achieved by the player.
-// It provides buttons to either play again or return to the main menu.
 public class ResultsScreen extends AbstractScreen {
     private static final int PINK = 0xFFFF69B4;
 
