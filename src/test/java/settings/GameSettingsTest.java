@@ -10,6 +10,7 @@ class GameSettingsTest {
     void usesExplicitDefaults() {
         GameSettings settings = new GameSettings();
 
+        assertEquals(0.3f, GameSettings.DEFAULT_SONG_VOLUME);
         assertEquals(GameSettings.DEFAULT_SONG_VOLUME, settings.getSongVolume());
         assertFalse(settings.isShowFps());
     }

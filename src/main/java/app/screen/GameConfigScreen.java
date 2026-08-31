@@ -26,7 +26,7 @@ public class GameConfigScreen extends AbstractScreen {
         cp5.addTextarea("playerNamePrompt")
                 .setPosition(sketch.width / 2f - 180, 85)
                 .setSize(360, 35)
-                .setText("Player name")
+                .setText("player name")
                 .hideScrollbar()
                 .moveTo(group);
 
@@ -47,7 +47,7 @@ public class GameConfigScreen extends AbstractScreen {
         cp5.addTextarea("difficultyPrompt")
                 .setPosition(sketch.width / 2f - 180, 195)
                 .setSize(360, 50)
-                .setText("Choose a difficulty")
+                .setText("choose a difficulty")
                 .hideScrollbar()
                 .moveTo(group);
 
@@ -78,11 +78,11 @@ public class GameConfigScreen extends AbstractScreen {
     public String getValidPlayerName() {
         String playerName = playerNameField.getText().trim();
         if (playerName.isEmpty()) {
-            validationMessage.setText("Enter a player name");
+            validationMessage.setText("enter a player name");
             return null;
         }
         if (playerName.length() > GameConfig.MAX_PLAYER_NAME_LENGTH) {
-            validationMessage.setText("Player name must be at most " + GameConfig.MAX_PLAYER_NAME_LENGTH + " characters");
+            validationMessage.setText("player name must be at most " + GameConfig.MAX_PLAYER_NAME_LENGTH + " characters");
             return null;
         }
         validationMessage.setText("");

@@ -29,6 +29,7 @@ public class SettingsScreen extends AbstractScreen {
                 .moveTo(group);
 
         songVolumeSlider = cp5.addSlider("songVolume")
+                .setBroadcast(false)
                 .setPosition(x, 190)
                 .setSize(360, 35)
                 .setRange(0, 100)
@@ -38,6 +39,7 @@ public class SettingsScreen extends AbstractScreen {
         songVolumeSlider.getValueLabel().hide();
 
         showFpsToggle = cp5.addToggle("showFps")
+                .setBroadcast(false)
                 .setPosition(x, 280)
                 .setSize(55, 32)
                 .moveTo(group);
@@ -52,6 +54,8 @@ public class SettingsScreen extends AbstractScreen {
 
         addButton(cp5, "resetSettings", "reset to defaults", x, 380, 360, 45);
         addButton(cp5, "returnToMenu", "main menu", x, 450, 360, 45);
+
+        syncControlsFromSettings();
     }
 
     @Override

@@ -137,6 +137,7 @@ public class MainSketch extends PApplet {
         }
 
         this.state = state;
+        surface.setTitle("KAIZEN! - " + state.getScreenName());
         if (state != GameState.PLAYING) {
             heldLanes.clear();
         }
@@ -249,6 +250,10 @@ public class MainSketch extends PApplet {
     }
 
     public void gameConfigMainMenu() {
+        returnToMenu();
+    }
+
+    public void resultsMainMenu() {
         returnToMenu();
     }
 

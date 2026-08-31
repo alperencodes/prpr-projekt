@@ -1,7 +1,7 @@
 package settings;
 
 public class GameSettings {
-    public static final float DEFAULT_SONG_VOLUME = 0.8f;
+    public static final float DEFAULT_SONG_VOLUME = 0.3f;
     public static final boolean DEFAULT_SHOW_FPS = false;
 
     private float songVolume;

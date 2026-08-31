@@ -22,13 +22,15 @@ public class ResultsScreen extends AbstractScreen {
                 .setText("round complete!")
                 .hideScrollbar()
                 .moveTo(group);
+        resultsText.getValueLabel()
+                .align(ControlP5.CENTER, ControlP5.CENTER);
 
         addButton(cp5, "playAgain", "play again", sketch.width / 2f - 90, 360);
-        addButton(cp5, "returnToMenu", "main menu", sketch.width / 2f - 90, 430);
+        addButton(cp5, "resultsMainMenu", "main menu", sketch.width / 2f - 90, 430);
     }
 
     public void setResults(int score, int maximumCombo) {
-        resultsText.setText("round complete!\n\nScore: " + score + "\nMax combo: " + maximumCombo);
+        resultsText.setText("round complete!\n\nscore: " + score + "\nmax combo: " + maximumCombo);
     }
 
     private void addButton(ControlP5 cp5, String name, String label, float x, float y) {
