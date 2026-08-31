@@ -36,9 +36,6 @@ public class MainSketch extends PApplet {
 
     private SoundFile currentSong;
     private HighscoreRepository highscoreRepository;
-    private long countdownStartMs;
-
-    private int tutorialPage;
 
     private PFont font;
     private PImage cursorImg;
