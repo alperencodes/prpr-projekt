@@ -52,8 +52,8 @@ public class SettingsScreen extends AbstractScreen {
                 .hideScrollbar()
                 .moveTo(group);
 
-        addButton(cp5, "resetSettings", "reset to defaults", x, 380, 360, 45);
-        addButton(cp5, "returnToMenu", "main menu", x, 450, 360, 45);
+        addButton(cp5, "resetSettings", "reset to defaults", x, 380);
+        addButton(cp5, "returnToMenu", "main menu", x, 450);
 
         syncControlsFromSettings();
     }
@@ -81,11 +81,11 @@ public class SettingsScreen extends AbstractScreen {
         showFpsToggle.setBroadcast(true);
     }
 
-    private void addButton(ControlP5 cp5, String name, String label, float x, int y, int width, int height) {
+    private void addButton(ControlP5 cp5, String name, String label, float x, int y) {
         Button button = cp5.addButton(name)
                 .setLabel(label)
                 .setPosition(x, y)
-                .setSize(width, height)
+                .setSize(360, 45)
                 .setColorBackground(PINK_BASE)
                 .moveTo(group);
         button.getCaptionLabel()
