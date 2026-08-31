@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class BeatmapLoader {
-    private BeatmapLoader() {
-    }
+    private BeatmapLoader() {}
 
     public static Beatmap load(PApplet sketch, Difficulty difficulty) {
         String path = "beatmaps/" + difficulty.name().toLowerCase() + ".json";

@@ -15,13 +15,6 @@ public class MenuScreen extends AbstractScreen {
         super(cp5, "menuGroup");
         this.sketch = sketch;
 
-        cp5.addTextarea("welcomeMessage")
-                .setPosition(sketch.width / 2f - 100, 120)
-                .setSize(300, 40)
-                .setText("welcome to...")
-                .hideScrollbar()
-                .moveTo(group);
-
         int buttonWidth = 175;
         int buttonHeight = 40;
         float buttonX = sketch.width / 2f - buttonWidth / 2f;
@@ -54,6 +47,13 @@ public class MenuScreen extends AbstractScreen {
         int dynamicPink = sketch.lerpColor(PINK_BASE, PINK_ACCENT, interpolationFactor);
 
         titleButton.setColorBackground(dynamicPink);
+
+        sketch.pushStyle();
+        sketch.fill(255);
+        sketch.textAlign(PApplet.CENTER, PApplet.TOP);
+        sketch.textSize(22);
+        sketch.text("welcome to...", sketch.width / 2f, 120);
+        sketch.popStyle();
     }
 
     private void addButton(ControlP5 cp5, String name, String label, float x, int y, int width, int height) {

@@ -12,7 +12,6 @@ import highscore.Highscore;
 import highscore.HighscoreRepository;
 import processing.core.PApplet;
 import processing.core.PFont;
-import processing.core.PImage;
 import processing.sound.SoundFile;
 import settings.DisplayManager;
 import settings.GameSettings;
@@ -38,7 +37,6 @@ public class MainSketch extends PApplet {
     private HighscoreRepository highscoreRepository;
 
     private PFont font;
-    private PImage cursorImg;
 
     private DisplayManager displayManager;
 
@@ -63,11 +61,10 @@ public class MainSketch extends PApplet {
         final int frameRate = displayManager.isRateKnown() ? displayManager.getRefreshRate() : 60;
         frameRate(frameRate);
 
-        noCursor();
         font = createFont("fonts/Torus.otf", 32);
         textFont(font);
-        cursorImg = loadImage("images/cursor.png");
         imageMode(CENTER);
+        cursor();
 
         cp5 = new ControlP5(this);
         cp5.setFont(font);
@@ -105,6 +102,7 @@ public class MainSketch extends PApplet {
             }
         }
 
+        textFont(font);
         if (currentScreen != null) {
             currentScreen.draw();
         }
@@ -112,6 +110,11 @@ public class MainSketch extends PApplet {
         fill(255);
 
         cp5.draw();
+
+        textFont(font);
+        if (currentScreen != null) {
+            currentScreen.drawOverlay();
+        }
 
         if (gameSettings.isShowFps()) {
             fill(255);
@@ -121,8 +124,6 @@ public class MainSketch extends PApplet {
             textFont(font);
         }
 
-        imageMode(CENTER);
-        image(cursorImg, mouseX, mouseY, 100, 100);
     }
 
     public void setState(GameState state) {

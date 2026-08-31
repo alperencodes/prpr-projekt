@@ -4,4 +4,6 @@ public interface Screen {
     void show();
     void hide();
     void draw();
+
+    default void drawOverlay() {}
 }

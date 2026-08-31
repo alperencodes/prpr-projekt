@@ -88,7 +88,16 @@ public class TutorialScreen extends AbstractScreen {
         float scale = Math.min(MAX_IMAGE_WIDTH / image.width, MAX_IMAGE_HEIGHT / image.height);
         int displayWidth = Math.round(image.width * scale);
         int displayHeight = Math.round(image.height * scale);
-        image.resize(displayWidth, displayHeight);
+        int density = Math.max(1, sketch.pixelDensity);
+
+        // Processing renders at the screen's backing-pixel density. Loaded
+        // images start at density 1, which made Java2D upscale this large image
+        // during every frame on Retina/high-DPI displays. Create the backing
+        // pixels once, so subsequent image() calls are 1:1 copies.
+        image.resize(displayWidth * density, displayHeight * density);
+        image.pixelDensity = density;
+        image.width = displayWidth;
+        image.height = displayHeight;
     }
 
     public void previousPage() {

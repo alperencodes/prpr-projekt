@@ -21,13 +21,6 @@ public class SettingsScreen extends AbstractScreen {
         this.gameSettings = gameSettings;
 
         float x = sketch.width / 2f - 180;
-        cp5.addTextarea("songVolumeLabel")
-                .setPosition(x, 145)
-                .setSize(360, 35)
-                .setText("song volume")
-                .hideScrollbar()
-                .moveTo(group);
-
         songVolumeSlider = cp5.addSlider("songVolume")
                 .setBroadcast(false)
                 .setPosition(x, 190)
@@ -45,13 +38,6 @@ public class SettingsScreen extends AbstractScreen {
                 .moveTo(group);
         showFpsToggle.getCaptionLabel().hide();
 
-        cp5.addTextarea("showFpsLabel")
-                .setPosition(x + 75, 279)
-                .setSize(285, 35)
-                .setText("show fps")
-                .hideScrollbar()
-                .moveTo(group);
-
         addButton(cp5, "resetSettings", "reset to defaults", x, 380);
         addButton(cp5, "returnToMenu", "main menu", x, 450);
 
@@ -66,9 +52,18 @@ public class SettingsScreen extends AbstractScreen {
 
     @Override
     public void draw() {
+        float x = sketch.width / 2f - 180;
+        sketch.pushStyle();
         sketch.fill(255);
+        sketch.textSize(22);
+        sketch.textAlign(PApplet.LEFT, PApplet.TOP);
+        sketch.text("song volume", x, 145);
+        sketch.text("show fps", x + 75, 290);
+
+        sketch.textSize(20);
         sketch.textAlign(PApplet.LEFT, PApplet.CENTER);
         sketch.text(Math.round(gameSettings.getSongVolume() * 100f) + "%", sketch.width / 2f + 195, 207);
+        sketch.popStyle();
     }
 
     public void syncControlsFromSettings() {
