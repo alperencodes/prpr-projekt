@@ -42,8 +42,8 @@ public class MenuScreen extends AbstractScreen {
 
     @Override
     public void draw() {
-        float wave = sketch.sin(sketch.millis() * 0.003f);
-        float interpolationFactor = sketch.map(wave, -1f, 1f, 0f, 1f);
+        float wave = PApplet.sin(sketch.millis() * 0.003f);
+        float interpolationFactor = PApplet.map(wave, -1f, 1f, 0f, 1f);
         int dynamicPink = sketch.lerpColor(PINK_BASE, PINK_ACCENT, interpolationFactor);
 
         titleButton.setColorBackground(dynamicPink);
