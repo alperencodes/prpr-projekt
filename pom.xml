@@ -10,12 +10,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <!-- The class that will be started, choose one and only one -->
-        <!-- <launcher.class>supermario.SuperMario</launcher.class> -->
-        <!-- <launcher.class>bouncingball.BouncingBall</launcher.class> -->
-        <launcher.class>demoapp.DemoApp</launcher.class>
-        <!-- <launcher.class>graph.GraphApp</launcher.class> -->
-        <!-- <launcher.class>pong.Pong</launcher.class>-->
+        <launcher.class>app.MainSketch</launcher.class>
 
         <jar.name>ProcessMe</jar.name>
 
